@@ -345,13 +345,34 @@
                 <h2 class="title">Para mi arandanito</h2>
                 <div class="subtitle">Un detalle pequeño lleno de cariño</div>
                 <p class="message">
-                    Cada día a tu lado pinta mi mundo de colores. No hay palabra que alcance para decir cuánto te amo;
+                    Cada día a tu lado pinta mi mundo de colores. 
+                    No hay palabra que alcance para decir cuánto te amo;
                     por eso te doy esta tarjeta con cariño.
+                    Para que recuerdes que siempre te amo mi luz que no quiero que se apague y
+                    sea siempre mi estrella blnca que e alumbre. 
                 </p>
-                <div class="signature">Con todo mi amor </div>
+                <div class="signature">Con todo mi amor para mi arandanito, mi princesa.</div>
             </div>
         </div>
     </div>
+
+     <audio id="miAudio"  autoplay loop>
+      <source
+        src="Chayanne - Yo Te Amo (Official Video) - chayanneVEVO.mp3"
+        type="audio/mpeg">
+    </audio>
+  </div>
+  <script>
+    const audio = document.getElementById("miAudio");
+
+    audio.addEventListener("loadedmetadata", () => {
+      audio.currentTime = 15; // empieza desde el segundo 15
+    });
+
+    audio.addEventListener("canplay", () => {
+      audio.play(); // asegurarse de que se reproduzca después de establecer el tiempo
+    });
+  </script>
 
 </body>
 
