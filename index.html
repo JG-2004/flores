@@ -1,0 +1,358 @@
+<!doctype html>
+<html lang="es">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Tarjeta adaptativa — Arandanito</title>
+
+    <style>
+        :root {
+            --lime: #ACBF1B;
+            /* lazo */
+            --dark: #1F2D36;
+            /* fondo tarjeta */
+            --slate: #4D6383;
+            /* cintas */
+            --soft: #F6F4F5;
+            /* fondo página / highlights */
+            --radius: 26px;
+        }
+
+        /* Base */
+        html,
+        body {
+            height: 100%;
+            margin: 0;
+            font-family: Inter, system-ui, Arial, sans-serif;
+            background: linear-gradient(180deg, var(--soft), #eef2f4);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+        }
+
+        /* Contenedor de la tarjeta */
+        .gift {
+            position: relative;
+            width: min(920px, 94vw);
+            background: var(--dark);
+            border-radius: var(--radius);
+            box-shadow: 0 30px 80px rgba(31, 45, 54, 0.36), inset 0 -10px 20px rgba(0, 0, 0, 0.28);
+            overflow: hidden;
+            /* por defecto proporción horizontal; en móvil cambiaremos */
+            aspect-ratio: 16 / 9;
+            display: block;
+        }
+
+        /* En pantallas pequeñas se convierte en tarjeta vertical con altura fluida */
+        @media (max-width:720px) {
+            .gift {
+                aspect-ratio: auto;
+                height: min(64vh, 680px);
+                border-radius: 18px;
+            }
+        }
+
+        /* Efecto borde interior sutil */
+        .gift::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            pointer-events: none;
+            box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.02);
+            z-index: 1;
+        }
+
+        /* Cinta principal (diagonal izquierda->derecha) - color slate */
+        .ribbon {
+            position: absolute;
+            left: -46%;
+            top: -15%;
+            width: 170%;
+            height: calc(6vh + 15px);
+            /* tamaño responsivo */
+            transform: rotate(-22deg);
+            background: linear-gradient(90deg, var(--lime), rgba(231, 231, 231, 0.689));
+            border-radius: 14px;
+            box-shadow: 0 14px 30px rgba(0, 0, 0, 0.36);
+            z-index: 2;
+            filter: drop-shadow(0 8px 14px rgba(0, 0, 0, 0.35));
+        }
+
+        .ribbon .stripe {
+            position: absolute;
+            inset: 6px;
+            border-radius: 10px;
+            background: rgba(0, 0, 0, 0.06);
+            opacity: 0.28;
+        }
+
+        /* Cinta secundaria en esquina opuesta */
+        .ribbon.r2 {
+            right: -46%;
+            left: auto;
+            top: auto;
+            bottom: -20%;
+            transform: rotate(150deg);
+        }
+
+        /* Brillo movible sobre las cintas */
+        .ribbon::before {
+            content: "";
+            position: absolute;
+            inset: -4px;
+            background: linear-gradient(90deg, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0.18) 45%, rgba(255, 255, 255, 0.06) 100%);
+            transform: translateX(-110%);
+            animation: shine 3.6s ease-in-out infinite;
+            mix-blend-mode: overlay;
+            opacity: 0.6;
+            border-radius: 14px;
+        }
+
+        .ribbon.r2::before {
+            animation-delay: 0.5s;
+        }
+
+        @keyframes shine {
+            to {
+                transform: translateX(120%);
+            }
+        }
+
+
+
+        /* Watermark pequeño abajo a la derecha */
+        .wm {
+            position: absolute;
+            right: 75%;
+            bottom: 18%;
+            z-index: 3;
+            background: rgba(246, 244, 245, 0.06);
+            color: var(--soft);
+            padding: 8px 12px;
+            border-radius: 8px;
+            backdrop-filter: blur(4px);
+            font-size: clamp(11px, 1.4vw, 13px);
+            border: 1px solid rgba(255, 255, 255, 0.02);
+        }
+
+        /* Texto central, decorativo, ocultamos en pantallas muy pequeñas */
+        .center-text {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1;
+            pointer-events: none;
+            color: rgba(246, 244, 245, 0.06);
+            font-size: clamp(18px, 3.8vw, 36px);
+            letter-spacing: 6px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        @media (max-width:520px) {
+            .center-text {
+                display: none;
+            }
+        }
+
+        /* RESPONSIVE: contenido adicional (texto en el centro) */
+        .content {
+            position: absolute;
+            z-index: 5;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: clamp(18px, 4vw, 48px);
+        }
+
+        .inner {
+            width: 100%;
+            max-width: 760px;
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            align-content: stretch;
+            align-items: flex-start;
+            gap: clamp(18px, 3.2vw, 36px);
+            align-items: center;
+            color: var(--soft);
+        }
+
+
+        img {
+            width: auto;
+            height: 190px;
+            padding-top: 25px;
+        }
+
+        /* En mobile, apilar verticalmente y centrar */
+        @media (max-width:720px) {
+            .inner {
+                flex-direction: column;
+                text-align: center;
+                gap: 18px;
+                align-items: center;
+                justify-content: flex-start;
+                margin-top: 12px;
+            }
+
+            .inner .text {
+                order: 2;
+
+            }
+
+            .inner .visual {
+                order: 1;
+            }
+
+        }
+
+
+
+
+
+
+        /* Tulip o elemento circular dentro (puedes cambiar por foto) */
+        .visual .circle {
+            width: clamp(96px, 18vw, 200px);
+            height: clamp(96px, 18vw, 200px);
+            display: grid;
+            place-items: center;
+            border-radius: 12px;
+            background: linear-gradient(180deg, rgba(172, 191, 27, 0.14), rgba(77, 99, 131, 0.06));
+            box-shadow: inset 0 -6px 16px rgba(0, 0, 0, 0.14);
+            transition: transform .28s ease;
+        }
+
+        .visual .circle:hover {
+            transform: translateY(-6px);
+        }
+
+        /* SVG inside */
+        .visual svg {
+            width: 60%;
+            height: auto;
+            display: block;
+            animation: float 3s ease-in-out infinite alternate;
+        }
+
+        @keyframes float {
+            from {
+                transform: translateY(0);
+            }
+
+            to {
+                transform: translateY(-8px);
+            }
+        }
+
+        /* Right text block */
+        .text {
+            flex: 1;
+            padding: clamp(6px, 1.8vw, 18px);
+            color: var(--soft);
+            text-align: left;
+        }
+
+        @media (max-width:720px) {
+            .text {
+                text-align: center;
+            }
+        }
+
+        .title {
+            font-family: 'Georgia', serif;
+            font-size: clamp(20px, 3.4vw, 34px);
+            color: var(--soft);
+            margin: 0 0 6px 0;
+            line-height: 1.02;
+            letter-spacing: 0.6px;
+        }
+
+        .subtitle {
+            color: rgba(246, 244, 245, 0.85);
+            font-size: clamp(13px, 1.6vw, 16px);
+            margin-bottom: 10px;
+        }
+
+        .message {
+            color: rgba(246, 244, 245, 0.92);
+            font-size: clamp(13px, 1.8vw, 16px);
+            line-height: 1.48;
+        }
+
+        /* small signature */
+        .signature {
+            margin-top: 12px;
+            font-weight: 600;
+            color: rgba(246, 244, 245, 0.96);
+            font-size: clamp(13px, 1.6vw, 15px);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="gift" role="img" aria-label="Tarjeta estilizada para arandanito">
+        <!-- Cintas diagonales -->
+        <div class="ribbon" aria-hidden="true">
+            <div class="stripe"></div>
+        </div>
+        <div class="ribbon r2" aria-hidden="true">
+            <div class="stripe"></div>
+        </div>
+
+
+
+        <!-- left loop -->
+        <path d="M48 70 C10 20, 60 10, 78 62 C74 68, 60 84, 48 70 Z" fill="url(#lg-lime)" stroke="#1F2D36"
+            stroke-opacity="0.12" stroke-width="1.5" filter="url(#drop)" />
+        <!-- right loop -->
+        <path d="M192 70 C230 20, 180 10, 162 62 C166 68, 180 84, 192 70 Z" fill="url(#lg-lime)" stroke="#1F2D36"
+            stroke-opacity="0.12" stroke-width="1.5" filter="url(#drop)" />
+        <!-- knot -->
+        <ellipse cx="120" cy="72" rx="20" ry="14" fill="url(#lg-dark)" stroke="#1F2D36" stroke-opacity="0.12"
+            stroke-width="1" />
+        <!-- tails -->
+        <path d="M98 84 C80 104, 40 118, 26 132 L44 126 C58 114, 78 102, 98 86 Z" fill="url(#lg-lime)" stroke="#1F2D36"
+            stroke-opacity="0.08" stroke-width="1" />
+        <path d="M142 84 C160 104, 200 118, 214 132 L196 126 C182 114, 162 102, 142 86 Z" fill="url(#lg-lime)"
+            stroke="#1F2D36" stroke-opacity="0.08" stroke-width="1" />
+        </svg>
+    </div>
+
+    <!-- small diagonal highlight/top-right -->
+    <div class="corner-highlight" aria-hidden="true"></div>
+
+
+    <!-- content overlay (keeps readable on top of dark background) -->
+    <div class="content">
+        <div class="inner">
+            <!-- VISUAL (left on desktop, first on mobile) -->
+
+            <img src="flor-de-tulipan-amarillo-illustration-svg-png-download-10086941.webp" alt="">
+
+
+            <!-- TEXT (right on desktop, second on mobile) -->
+            <div class="text">
+                <h2 class="title">Para mi arandanito</h2>
+                <div class="subtitle">Un detalle pequeño lleno de cariño</div>
+                <p class="message">
+                    Cada día a tu lado pinta mi mundo de colores. No hay palabra que alcance para decir cuánto te amo;
+                    por eso te doy esta tarjeta con cariño.
+                </p>
+                <div class="signature">Con todo mi amor </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>
